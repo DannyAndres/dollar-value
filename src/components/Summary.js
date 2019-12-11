@@ -10,19 +10,22 @@ export default (props) => {
       <Logo className="App-logo"/>
       <div className="prom">
         <div className="ammount">
-          779.10
+          { props.average }
         </div>
         <div className="icon">
-          <Arrowup className="image"/>
+          { props.up ?
+            <Arrowup className="image"/> :
+            <Arrowdown className="image"/>
+          }
           <span className="text">clp</span>
         </div>
       </div>
       <div className="maxmin">
         <div>
-          min 613.50
+          min { props.min }
         </div>
         <div>
-          max 821.04
+          max { props.max }
         </div>
       </div>
     </div>
