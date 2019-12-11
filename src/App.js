@@ -15,9 +15,7 @@ export default () => {
   const [period, setPeriod] = useState([0,0])
 
   const load = async () => {
-    setPeriod([0,0])
-    setUp(true)
-    let response = await Http('dolar/periodo/2010/01/dias_i/04/2010/01/dias_f/15')
+    let response = await Http('dolar/periodo/2010/01/dias_i/04/2010/01/dias_f/17')
     console.log(response.Dolares)
     response.Dolares = response.Dolares.map(e => parseFloat(e.Valor.replace(",", ".")))
     console.log(response.Dolares)
@@ -33,8 +31,11 @@ export default () => {
     if(response.Dolares.length > 1) {
       setPeriod(response.Dolares)
       setUp(response.Dolares[0] > response.Dolares[response.Dolares.length - 1] ? false : true)
+    } else {
+      setPeriod([0,0])
+      setUp(true)
     }
-    setAverage(count)
+    setAverage(count.toFixed(2))
     setMax(max)
     setMin(min)
     // if(response.Dolares.length > 1) {
@@ -74,7 +75,7 @@ export default () => {
           average={average}
           min={min}
           max={max}
-          up={false}
+          up={up}
         />
         <div className="box">
           <Graph/>

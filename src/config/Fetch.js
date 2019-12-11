@@ -5,7 +5,9 @@ export default async (call,body) => {
   const BASE_URL = 'http://api.sbif.cl/api-sbifv3/recursos_api/'+call+'?apikey='+API_KEY+'&formato=json&callback=despliegue'
   const response = await fetch(BASE_URL, {
     method: body ? 'POST' : 'GET',
-    headers: {'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'},
+    headers: {
+      'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
+    },
     body: JSON.stringify(body)
   }).then((response) => {
     return response.json();
