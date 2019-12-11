@@ -1,26 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Summary from './components/Summary';
+import Button from './components/Button';
+import Input from './components/Input';
 
-function App() {
+import './sass/App.scss';
+
+export default () => {
+
+  const load = () => {
+    console.log('test')
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="container test">
+        <Summary
+        
+        />
+        <div className="box test">
+          Grafico
+        </div>
+      </div>
+      <div className="container test">
+        <div className="box">
+          <Input
+            placeholder="Fecha Inicio"
+          />
+          <Input
+            placeholder="Fecha Termino"
+          />
+          <Button
+            text="Mostrar Valor"
+            onClick={() => {load()}}
+          />
+        </div>
+      </div>
     </div>
   );
 }
-
-export default App;

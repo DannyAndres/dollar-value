@@ -1,0 +1,44 @@
+@import './../../config/config.scss';
+
+.Input {
+  background-color: $input-background-color;
+  color: $input-text-color;
+  font-weight: bold;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding-top: 1.2em;
+  padding-bottom: 1.2em;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: 30px;
+  -webkit-appearance: none; 
+  -moz-appearance: none;
+  border: 1px solid $input-background-color;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.Input:focus {
+  border: 1px solid $background-color;
+}
+
+::-webkit-input-placeholder {
+  font-size: 15px;
+  color: $input-placeholder-color;
+}
+::-moz-placeholder {
+  font-size: 15px;
+  color: $input-placeholder-color;
+}
+:-ms-input-placeholder {
+  font-size: 15px;
+  color: $input-placeholder-color;
+}
+::placeholder {
+  font-size: 15px;
+  color: $input-placeholder-color;
+}

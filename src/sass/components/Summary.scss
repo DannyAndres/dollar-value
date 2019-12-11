@@ -1,0 +1,57 @@
+@import './../../config/config.scss';
+
+.Summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 250px;
+  @media screen and (min-width: $breakpoint) {
+    padding: 1em;
+    margin-right: 50px;
+  }
+}
+
+.App-logo {
+  width: 36.4px;
+  height: 45px;
+  opacity:0.6;
+  fill: $text-color;
+}
+
+.prom {
+  display: flex;
+  flex-direction: row;
+  .ammount {
+    color: $text-color;
+    font-size: 72px;
+    font-weight: bold;
+  }
+  .icon {
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .image {
+      height: 25px;
+      fill: $text-color;
+    }
+    .text {
+      font-weight: bold;
+      font-size: 20px;
+      color: rgba($text-color, 0.7);
+    }
+  }
+}
+
+.maxmin {
+  > :not(:last-child) {
+    margin-right: 20px;
+  }
+  display: flex;
+  flex-direction: row;
+  color: rgba($text-color, 0.7);
+  font-size: 20px;
+  font-weight: 700;
+}

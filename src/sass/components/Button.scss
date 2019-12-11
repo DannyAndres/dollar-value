@@ -1,0 +1,30 @@
+@import './../../config/config.scss';
+
+.Button {
+    background-color: $button-background-color;
+    color: $button-text-color;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    border-radius: 30px;
+    border-bottom: 6px solid $button-background-color-secondary;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.Button:active {
+    border-bottom: 0px;
+    background-color: rgba($button-background-color, 0.75);
+}
+
+.Button:hover {
+    background-color: rgba($button-background-color, 0.95);
+}
