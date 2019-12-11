@@ -1,4 +1,5 @@
 import React from 'react';
+import Trend from 'react-trend';
 import Summary from './components/Summary';
 import Button from './components/Button';
 import Input from './components/Input';
@@ -11,17 +12,32 @@ export default () => {
     console.log('test')
   }
 
+  const Graph = () => (
+    <Trend
+      smooth
+      autoDraw
+      autoDrawDuration={1000}
+      autoDrawEasing="ease-out"
+      data={[0,2,5,9,5,10,3,5,0,0,1,8,2,9,0]}
+      gradient={['#FFF', '#FFF', '#fff']}
+      radius={10}
+      height={100}
+      strokeWidth={5}
+      strokeLinecap={'butt'}
+    />
+  );
+
   return (
     <div className="App">
-      <div className="container test">
+      <div className="container">
         <Summary
         
         />
-        <div className="box test">
-          Grafico
+        <div className="box">
+          <Graph/>
         </div>
       </div>
-      <div className="container test">
+      <div className="container">
         <div className="box">
           <Input
             placeholder="Fecha Inicio"
