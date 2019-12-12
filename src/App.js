@@ -13,39 +13,52 @@ export default () => {
   const [max, setMax] = useState('-')
   const [up, setUp] = useState(true)
   const [period, setPeriod] = useState([0,0])
+  const [error, setError] = useState(false)
 
   const load = async () => {
-    let response = await Http('dolar/periodo/2010/01/dias_i/04/2010/01/dias_f/17')
-    console.log(response.Dolares)
-    response.Dolares = response.Dolares.map(e => parseFloat(e.Valor.replace(",", ".")))
-    console.log(response.Dolares)
-    let max = 0
-    let min = response.Dolares[0]
-    let count = 0
-    response.Dolares.forEach(e => {
-      max = max < e ? e : max;
-      min = min > e ? e : min;
-      count += e
-    });
-    count = count / response.Dolares.length
-    if(response.Dolares.length > 1) {
-      setPeriod(response.Dolares)
-      setUp(response.Dolares[0] > response.Dolares[response.Dolares.length - 1] ? false : true)
-    } else {
+    setError(false)
+    let response = await Http('dolar/periodo/2010/01/dias_i/04/2018/01/dias_f/07')
+    if(response === 'cors') {
+      setError(true)
+      setAverage('-')
+      setMax('-')
+      setMin('-')
       setPeriod([0,0])
-      setUp(true)
+    } else {
+      response.Dolares = response.Dolares.map(e => parseFloat(e.Valor.replace(",", ".")))
+      let max = 0
+      let min = response.Dolares[0]
+      let count = 0
+      response.Dolares.forEach(e => {
+        max = max < e ? e : max;
+        min = min > e ? e : min;
+        count += e
+      });
+      count = count / response.Dolares.length
+      if(response.Dolares.length > 1) {
+        setPeriod(response.Dolares)
+        setUp(response.Dolares[0] > response.Dolares[response.Dolares.length - 1] ? false : true)
+      } else {
+        setPeriod([0,0])
+        setUp(true)
+      }
+      setAverage(count.toFixed(2))
+      setMax(max)
+      setMin(min)
     }
-    setAverage(count.toFixed(2))
-    setMax(max)
-    setMin(min)
-    // if(response.Dolares.length > 1) {
-    //   setPeriod(response.Dolares.map(e => e.Valor))
-    // }
   }
 
   const dollarValue = async () => {
     const response = await Http('dolar')
-    setAverage(response.Dolares[0].Valor)
+    if(response === 'cors') {
+      setError(true)
+      setAverage('-')
+      setMax('-')
+      setMin('-')
+      setPeriod([0,0])
+    } else {
+      setAverage(response.Dolares[0].Valor)
+    }
   }
 
   const Graph = () => (
@@ -55,7 +68,7 @@ export default () => {
       autoDrawDuration={1000}
       autoDrawEasing="ease-out"
       data={period}
-      gradient={['#FFF', '#FFF', '#fff']}
+      gradient={[period.length > 2 ? '#EF5350' : 'white', 'white', 'white']}
       radius={10}
       height={100}
       width={270}
@@ -78,7 +91,12 @@ export default () => {
           up={up}
         />
         <div className="box">
-          <Graph/>
+          { !error ? <Graph/> :
+            <span className="ups">
+              <span className="title">Ups</span>
+              <span className="subtitle">Inténtalo nuevamente</span>
+            </span>
+          }
         </div>
       </div>
       <div className="container">
