@@ -15,3 +15,15 @@
 * {
   outline: none;
 }
+
+.DayPickerSelect {
+  background-color: $input-background-color;
+  color: $input-text-color;
+  font-weight: bold;
+  margin-right: 5px;
+  border: 1px solid transparent;
+}
+
+.DayPickerSelect:focus {
+  border: 1px solid $background-color;
+}

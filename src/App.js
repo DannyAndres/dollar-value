@@ -13,6 +13,43 @@ import Input from './components/Input';
 
 import './sass/App.scss';
 
+const currentYear = new Date().getFullYear();
+const fromMonth = new Date(currentYear - 100, moment().month());
+const toMonth = new Date(currentYear, moment().month());
+
+const YearMonthForm = ({ date, onChange }) => {
+  const months = moment.months();
+  const years = [];
+  for (let i = fromMonth.getFullYear(); i <= toMonth.getFullYear(); i += 1) {
+    years.push(i);
+  }
+
+  const handleChange = (e) => {
+    const { year, month } = e.target.form;
+    onChange(new Date(year.value, month.value));
+  };
+
+  return (
+    <form className="DayPicker-Caption">
+      <select className="DayPickerSelect" name="month" onChange={handleChange} value={date.getMonth()}>
+        {months.map((month, i) => (
+          <option key={month} value={i}>
+            {month}
+          </option>
+        ))}
+      </select>
+      <select className="DayPickerSelect" name="year" onChange={handleChange} value={date.getFullYear()}>
+        {years.map(year => (
+          <option key={year} value={year}>
+            {year}
+          </option>
+        ))}
+      </select>
+    </form>
+  );
+}
+
+
 export default () => {
   const [average, setAverage] = useState(0)
   const [min, setMin] = useState('-')
@@ -24,6 +61,7 @@ export default () => {
   const [endDateBool, setEndDateBool] = useState(false)
   const [startDate, setStartDate] = useState({format: '', moment: '', day: ''})
   const [endDate, setEndDate] = useState({format: '', moment: '', day: ''})
+  const [month, setMonth] = useState(toMonth)
 
   const load = async () => {
     setError(false)
@@ -163,6 +201,15 @@ export default () => {
               disabledDays={{
                 after: (endDate.moment === '' ? '' : endDate.moment.clone().subtract(1,'day').toDate())
               }}
+              month={month}
+              fromMonth={fromMonth}
+              toMonth={toMonth}
+              captionElement={({ date }) => (
+                <YearMonthForm
+                  date={date}
+                  onChange={month => setMonth(month)}
+                />
+              )}
             />
           : '' }
           { endDateBool ?
@@ -171,8 +218,18 @@ export default () => {
               locale="es"
               onDayClick={(day, { selected, disabled }) => selectEndDate(day, { selected, disabled })}
               disabledDays={{
-                before: (startDate.moment === '' ? '' : startDate.moment.clone().add(1,'day').toDate())
+                before: (startDate.moment === '' ? '' : startDate.moment.clone().add(1,'day').toDate()),
+                after: moment().toDate()
               }}
+              month={month}
+              fromMonth={fromMonth}
+              toMonth={toMonth}
+              captionElement={({ date }) => (
+                <YearMonthForm
+                  date={date}
+                  onChange={month => setMonth(month)}
+                />
+              )}
             />
           : '' }
           <Input
