@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Trend from 'react-trend';
 import DayPicker from 'react-day-picker';
+import MomentLocaleUtils from 'react-day-picker/moment';
 import moment from 'moment';
+import 'moment/locale/es';
 import 'react-day-picker/lib/style.css';
+import './sass/Datepicker.scss';
 import Http from './config/Fetch';
 import Summary from './components/Summary';
 import Button from './components/Button';
@@ -154,6 +157,8 @@ export default () => {
         <div className="box">
           { startDateBool ?
             <DayPicker
+              localeUtils={MomentLocaleUtils}
+              locale="es"
               onDayClick={(day, { selected, disabled }) => selectStartDate(day, { selected, disabled })}
               disabledDays={{
                 after: (endDate.moment === '' ? '' : endDate.moment.clone().subtract(1,'day').toDate())
@@ -162,6 +167,8 @@ export default () => {
           : '' }
           { endDateBool ?
             <DayPicker
+              localeUtils={MomentLocaleUtils}
+              locale="es"
               onDayClick={(day, { selected, disabled }) => selectEndDate(day, { selected, disabled })}
               disabledDays={{
                 before: (startDate.moment === '' ? '' : startDate.moment.clone().add(1,'day').toDate())

@@ -1,0 +1,17 @@
+@import './../config/config.scss';
+
+.DayPicker-Day--today {
+  color: $background-color;
+  font-weight: bold;
+}
+
+.DayPicker-Day--disabled {
+  color: rgba(white, 0.2);
+}
+.DayPicker:not(.DayPicker--interactionDisabled) .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
+  background-color: rgba($background-color, 0.5);
+}
+
+* {
+  outline: none;
+}
