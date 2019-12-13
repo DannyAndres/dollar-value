@@ -16,7 +16,9 @@ export default async (call,body) => {
       if(debug) {
         throw error.message
       }
-      return [];
+      return {
+        Dolares: []
+      };
     });
     return response 
   } catch (error) {

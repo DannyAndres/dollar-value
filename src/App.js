@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Trend from 'react-trend';
+import DayPicker from 'react-day-picker';
+import moment from 'moment';
+import 'react-day-picker/lib/style.css';
 import Http from './config/Fetch';
 import Summary from './components/Summary';
 import Button from './components/Button';
@@ -14,11 +17,22 @@ export default () => {
   const [up, setUp] = useState(true)
   const [period, setPeriod] = useState([0,0])
   const [error, setError] = useState(false)
+  const [startDateBool, setStartDateBool] = useState(false)
+  const [endDateBool, setEndDateBool] = useState(false)
+  const [startDate, setStartDate] = useState({format: '', moment: '', day: ''})
+  const [endDate, setEndDate] = useState({format: '', moment: '', day: ''})
 
   const load = async () => {
     setError(false)
-    let response = await Http('dolar/periodo/2010/01/dias_i/04/2018/01/dias_f/07')
-    if(response === 'cors') {
+    showDatepicker('close')
+    if(startDate.format === '' || endDate.format === '') {
+      alert('date missing')
+      return
+    }
+    let response = await Http(
+      'dolar/periodo/'+startDate.moment.year()+'/'+(startDate.moment.month()+1)+'/dias_i/'+startDate.moment.date()+'/'+endDate.moment.year()+'/'+(endDate.moment.month()+1)+'/dias_f/'+endDate.moment.date(),
+    )
+    if(response === 'cors' || response.CodigoError !== undefined) {
       setError(true)
       setAverage('-')
       setMax('-')
@@ -50,7 +64,7 @@ export default () => {
 
   const dollarValue = async () => {
     const response = await Http('dolar')
-    if(response === 'cors') {
+    if(response === 'cors' || response.CodigoError !== undefined) {
       setError(true)
       setAverage('-')
       setMax('-')
@@ -61,6 +75,43 @@ export default () => {
     }
   }
 
+  const showDatepicker = datepicker => {
+    if(datepicker === 'start') {
+      setStartDateBool(true)
+      setEndDateBool(false)
+    }
+    if(datepicker === 'end') {
+      setStartDateBool(false)
+      setEndDateBool(true)
+    }
+    if(datepicker === 'close') {
+      setStartDateBool(false)
+      setEndDateBool(false)
+    }
+  }
+
+  const selectStartDate = (day, { selected, disabled }) => {
+    if(!disabled) {
+      setStartDate({
+        format: moment(day).format('DD/MM/YYYY'),
+        moment: moment(day),
+        day: day
+      })
+      setStartDateBool(false)
+    }
+  }
+
+  const selectEndDate = (day, { selected, disabled }) => {
+    if(!disabled) {
+      setEndDate({
+        format: moment(day).format('DD/MM/YYYY'),
+        moment: moment(day),
+        day: day
+      })
+      setEndDateBool(false)
+    }
+  }
+
   const Graph = () => (
     <Trend
       smooth
@@ -68,7 +119,7 @@ export default () => {
       autoDrawDuration={1000}
       autoDrawEasing="ease-out"
       data={period}
-      gradient={[period.length > 2 ? '#EF5350' : 'white', 'white', 'white']}
+      gradient={['white', 'white', 'white']}
       radius={10}
       height={100}
       width={270}
@@ -93,7 +144,7 @@ export default () => {
         <div className="box">
           { !error ? <Graph/> :
             <span className="ups">
-              <span className="title">Ups</span>
+              <span className="title">Ups, No hay Datos</span>
               <span className="subtitle">Inténtalo nuevamente</span>
             </span>
           }
@@ -101,11 +152,31 @@ export default () => {
       </div>
       <div className="container">
         <div className="box">
+          { startDateBool ?
+            <DayPicker
+              onDayClick={(day, { selected, disabled }) => selectStartDate(day, { selected, disabled })}
+              disabledDays={{
+                after: (endDate.moment === '' ? '' : endDate.moment.clone().subtract(1,'day').toDate())
+              }}
+            />
+          : '' }
+          { endDateBool ?
+            <DayPicker
+              onDayClick={(day, { selected, disabled }) => selectEndDate(day, { selected, disabled })}
+              disabledDays={{
+                before: (startDate.moment === '' ? '' : startDate.moment.clone().add(1,'day').toDate())
+              }}
+            />
+          : '' }
           <Input
             placeholder="Fecha Inicio"
+            onClick={() => showDatepicker('start')}
+            value={startDate.format}
           />
           <Input
             placeholder="Fecha Termino"
+            onClick={() => showDatepicker('end')}
+            value={endDate.format}
           />
           <Button
             text="Mostrar Valor"
