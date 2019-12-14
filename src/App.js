@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Trend from 'react-trend';
 import DayPicker from 'react-day-picker';
 import MomentLocaleUtils from 'react-day-picker/moment';
 import moment from 'moment';
@@ -10,45 +9,14 @@ import Http from './config/Fetch';
 import Summary from './components/Summary';
 import Button from './components/Button';
 import Input from './components/Input';
+import Graph from './components/Graph';
+import DatepickerForm from './components/DatepickerForm';
 
 import './sass/App.scss';
 
 const currentYear = new Date().getFullYear();
 const fromMonth = new Date(currentYear - 100, moment().month());
 const toMonth = new Date(currentYear, moment().month());
-
-const YearMonthForm = ({ date, onChange }) => {
-  const months = moment.months();
-  const years = [];
-  for (let i = fromMonth.getFullYear(); i <= toMonth.getFullYear(); i += 1) {
-    years.push(i);
-  }
-
-  const handleChange = (e) => {
-    const { year, month } = e.target.form;
-    onChange(new Date(year.value, month.value));
-  };
-
-  return (
-    <form className="DayPicker-Caption">
-      <select className="DayPickerSelect" name="month" onChange={handleChange} value={date.getMonth()}>
-        {months.map((month, i) => (
-          <option key={month} value={i}>
-            {month}
-          </option>
-        ))}
-      </select>
-      <select className="DayPickerSelect" name="year" onChange={handleChange} value={date.getFullYear()}>
-        {years.map(year => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
-    </form>
-  );
-}
-
 
 export default () => {
   const [average, setAverage] = useState(0)
@@ -62,14 +30,16 @@ export default () => {
   const [startDate, setStartDate] = useState({format: '', moment: '', day: ''})
   const [endDate, setEndDate] = useState({format: '', moment: '', day: ''})
   const [month, setMonth] = useState(toMonth)
+  const [loading, setLoading] = useState(false)
 
   const load = async () => {
     setError(false)
     showDatepicker('close')
     if(startDate.format === '' || endDate.format === '') {
-      alert('date missing')
+      alert('debe ingresar las fechas')
       return
     }
+    setLoading(true)
     let response = await Http(
       'dolar/periodo/'+startDate.moment.year()+'/'+(startDate.moment.month()+1)+'/dias_i/'+startDate.moment.date()+'/'+endDate.moment.year()+'/'+(endDate.moment.month()+1)+'/dias_f/'+endDate.moment.date(),
     )
@@ -101,6 +71,7 @@ export default () => {
       setMax(max)
       setMin(min)
     }
+    setLoading(false)
   }
 
   const dollarValue = async () => {
@@ -153,22 +124,6 @@ export default () => {
     }
   }
 
-  const Graph = () => (
-    <Trend
-      smooth
-      autoDraw
-      autoDrawDuration={1000}
-      autoDrawEasing="ease-out"
-      data={period}
-      gradient={['white', 'white', 'white']}
-      radius={10}
-      height={100}
-      width={270}
-      strokeWidth={5}
-      strokeLinecap={'round'}
-    />
-  );
-
   useEffect(() => {
     dollarValue();
   },[])
@@ -183,7 +138,15 @@ export default () => {
           up={up}
         />
         <div className="box">
-          { !error ? <Graph/> :
+          { !error ? 
+            (loading ?
+              <span className="ups">
+                <span className="subtitle">cargando</span>
+              </span>
+              :
+              <Graph period={period}/>
+            )
+            :
             <span className="ups">
               <span className="title">Ups, No hay Datos</span>
               <span className="subtitle">Inténtalo nuevamente</span>
@@ -205,7 +168,9 @@ export default () => {
               fromMonth={fromMonth}
               toMonth={toMonth}
               captionElement={({ date }) => (
-                <YearMonthForm
+                <DatepickerForm
+                  fromMonth={fromMonth}
+                  toMonth={toMonth}
                   date={date}
                   onChange={month => setMonth(month)}
                 />
@@ -225,7 +190,9 @@ export default () => {
               fromMonth={fromMonth}
               toMonth={toMonth}
               captionElement={({ date }) => (
-                <YearMonthForm
+                <DatepickerForm
+                  fromMonth={fromMonth}
+                  toMonth={toMonth}
                   date={date}
                   onChange={month => setMonth(month)}
                 />
